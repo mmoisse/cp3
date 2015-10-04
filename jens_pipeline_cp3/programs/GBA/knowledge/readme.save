@@ -1,0 +1,17 @@
+lcrs 
+is used to get a complexity cutoff during the entension of the
+longest-path intervals. It is used by the fixed sampling (i.e., 27 LCRs from five sequences 
+masked by SEG.
+
+comCut27Seg
+contains the average complexity of all lcrs in the above file ("lcrs").
+
+comCutOffValue*
+are complexity cutoff values for the entension of the longest-path intervals.
+They are generated using conditional-sampling, i.e., G_t / sqrt(t) <= C*u_t.
+
+blosum62Matrix
+is used when computing complexities.
+
+chosen* and samp*
+are used for the step: comparing consecutive intervals.

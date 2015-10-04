@@ -1,0 +1,36 @@
+In every combinedMatricesRowByRow0*, i.e., matrices with forget rate, the
+diagonal values in the repeat matrix beat the corresponding diagonal entries in
+the non-repeat matrix, except the following:
+
+085:   forget rate  
+          row#     value in nonRepeat    value in Repeat       Difference
+           3        0.054785747          0.041199617      =    0.01358613  
+          10        0.048190996          0.038680922      =    0.009510074  
+          11        0.09724309           0.08786197       =    0.00938112   
+          17        0.14697152           0.1444053        =    0.00256622   
+          20        0.06276279           0 .05971894      =    0.00304385
+
+090:    forget rate  
+          row#     value in nonRepeat    value in Repeat       Difference
+          3          0.053452674         0.043458484     =     0.00999419 
+          10         0.048413113         0.040571973     =     0.00784114   
+          11         0.09725676          0.09077408      =     0.00648268    
+          20         0.06279502          0.06117886      =     0.00161616
+
+095:  forget rate  
+         row#     value in nonRepeat    value in Repeat       Difference
+          3        0.0510391            0.04625731       =    0.00478179 
+          10       0.048353415          0.043139264      =    0.005214151
+          11       0.09694212           0.094949976      =    0.001992144
+
+The smaller the forget rate, the more entries, the bigger the difference(say,  
+0.01358613, 0.00999419, 0.00478179)??????
+
+The 3rd, 10th, 11th, 17th and 20th coresspond to letter N, I, L, T and V,
+respectively.
+This means that if any of the above 5 letters appears with itself a lot of
+times in a neighbourhood, we may miss them, since the non-repeat matrix
+entry has a bigger value that the repeat matrix.
+See '>TRF_DROME' in 
+/cise/research38/tamer/xli/LCR/graphLCR/vertices/letters/wForgetRate/rate085/flybaseAfterCutting3155
+for example.

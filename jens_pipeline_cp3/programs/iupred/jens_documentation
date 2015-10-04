@@ -1,0 +1,5 @@
+Modifications made to iupred.c:
+
+Removed printing of residue numbers from type 1 clause.
+Removed printing of first 9 lines of text.
+

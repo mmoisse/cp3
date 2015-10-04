@@ -1,0 +1,52 @@
+Created by Jens Persson 13/01-15
+
+This pipeline is designed to take single fasta sequences in a certain format and input them into the predictors for intrinsic disorder.
+
+The overall flowchart of the pipeline looks something like this:
+
+1. 
+Prior to initiating the pipeline, sequences need to be formatted correctly. The correct format is seen below, WITHOUT STOP CODONS.
+
+	>YAL017W PSK1
+	SEQUENCEHERE...
+
+The first name (usually systematic name, but it could be reversed) will be used for the naming of the result files.
+The sequence files need to ONLY CONTAIN ONE sequence each.
+
+2. 
+The folder called pre-processing helps to modify syntax of files prior to initiation of the pipeline. 
+
+	2.1 If your sequences are found in a single file, run the script called "fasta_list_split.sh" using the command:
+
+	    ./fasta_list_split.sh X 
+	    where: 
+	    X is the name of the sequence file
+	
+	    The folder fasta_split_results will contain the sequence results.
+
+	2.2 With your single fasta sequence files ready, run "syntax_modifying_script.sh" using the command:
+
+	   ./syntax_modifying_script.sh X Y
+	   where:
+	   X is the name of the folder containing only the sequence files
+	   Y is the field of the identifier line used for naming of subsequent files. (In the earlier example given of format, a flag
+	   of 1 would name the files according to the systematic name while 2 would name them according to the common name.)
+
+	   Running this command will remove stop codons and rename all files according to their systematic or common name.
+
+3. 
+With the sequence files modified to the correct syntax, move them to the working directory of the start_script.sh.
+
+Initiate the analysis using the command:
+
+./start_script.sh X Y
+where:
+X is the name of the folder containing the sequences.
+Y is the desired name for the output folder.
+
+4.
+The analysis should complete within 20 minutes for the Saccharomyces cerevisiae proteome.
+Result files are stored in the result_folder folder
+
+
+

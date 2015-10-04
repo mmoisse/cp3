@@ -1,0 +1,6 @@
+plot "sampledLenRepPer" u 3 w lp
+set term postscript eps enhanced
+set output "sampledLenRepPer1.eps"
+plot "sampledLenRepPer" u 3 w lp
+!epstopdf sampledLenRepPer1.eps
+set term X11
