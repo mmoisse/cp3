@@ -1,0 +1,335 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="style.css">
+</head>
+<body>
+<?php
+	
+	$destFile = $argv[1];
+	echo 'destFile: '.$destFile."\n";
+	$swissProt =$argv[2];
+	echo 'swissPort: '.$swissProt."\n";
+	$t1 = $argv[3];
+	echo 't1: '.$t1."\n";
+	$t2 = $argv[4];
+	echo 't2: '.$t2."\n";
+	$t3 = $argv[5];
+	echo 't3: '.$t3."\n";
+	$eaddr = $argv[6];
+	$totalpath = $argv[7];
+	
+	//Get the time from the epoch
+	$reqTime = $_SERVER['REQUEST_TIME'];
+	// So $resultFile stores the name of the file that will contans the result. 
+	$resultFile = '../resultDir/'.$reqTime.'.htm';
+	
+	$filelink = $totalpath.$reqTime.'.htm';
+	//Now $totalpath con contains the mail address
+	echo "result link: ".$totalpath;
+	//Open the file and store the file pointer in a handle
+	@$resfp = fopen($resultFile, 'w');
+	//Handling error message
+	if(!$resfp)
+	{
+		echo '<p><strong> Your request cann\'t be processed at this time.<br />
+		Please try again later.</p>';
+	}
+	//echo 'Your query is being processed. A link to the result will be mailed to your email address.';
+	//echo 'The name of the outfile is :'.$resultFile;
+	
+	fwrite($resfp, '<html>'."\n");
+	fwrite($resfp, '<head>',"\n");
+	fwrite($resfp, '<link type="text/css" rel="stylesheet" href="../lcr/style.css">'."\n");
+	fwrite($resfp, '</head>'."\n");
+	fwrite($resfp, '<body>'."\n");
+	
+	
+	//So From Here actual execution starts. So we are splitting it here.
+	//Now create the excution Line
+	//echo"<h1 align=\"center\"> Graph Based Algorithm </h1><hr />";
+	fwrite($resfp, '<h1 align=\"center\"> Graph Based Algorithm </h1><hr />'."\n");
+	
+
+	$execLine1 = "java applications.Gbm ".$destFile." ".$swissProt." ".$t2." ".$t1." ".$t3." knowledge/blosum62Matrix 1";
+	
+	echo 'execLine1: '.$execLine1."\n";
+	$outline1 = shell_exec($execLine1);
+	
+	$outline1=trim($outline1);
+	
+	$outarr1 = str_split($outline1);
+	fwrite($resfp,  '<h2>Low complexity regions masked by \'x\': </h2>'."\n");
+	fwrite($resfp,  '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" font-family: courier>'."\n"); 
+	fwrite($resfp,  ' <tr>'."\n");
+	fwrite($resfp,  '    <td valign="top">'."\n");
+	
+	//echo '<h2>Low complexity regions masked by \'x\': </h2>';
+	//echo '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" font-family: courier>'; 
+	//echo ' <tr>';
+	//echo '    <td valign="top">';
+		
+	$desflag = false;
+	for($i=0; $i < sizeof($outarr1); $i++)
+	{
+		$j=1;
+		$ss = substr($outline1, $i, $j);
+		if(!strcmp($ss, "\n"))
+		{
+			$desflag = false;
+			
+			//echo '<br />';
+			fwrite($resfp,  '<br />'."\n");
+		}
+		else
+		{
+			if($outarr1[$i] == '>')
+			{
+				$desflag = true;
+			}
+			if($outarr1[$i] == '>' && $i !=0)
+			{
+				//echo '<br />';
+				fwrite($resfp,  '<br />'."\n");
+			}
+			if($desflag == true)
+			{
+				//echo '<i>'.$outarr1[$i].'</i>';
+				fwrite($resfp,  '<i>'.$outarr1[$i].'</i>');
+			}
+			else
+			{
+				if($outarr1[$i] == 'x')
+				{
+					//echo 'X';
+					fwrite($resfp,  'X');
+				}
+				else
+				{
+					//echo $outarr1[$i];
+					fwrite($resfp,  $outarr1[$i]);
+				}
+			}
+		}
+	}
+	
+	//echo '</td>';
+	//echo  '</tr>';
+	//echo '</table>';	//Here compare the characters between $outarr and $trimmed.
+	fwrite($resfp,  '</td>'."\n");
+	fwrite($resfp,  '</tr>'."\n");
+	fwrite($resfp,  '</table>'."\n");
+	
+
+	//Doing the range in different way
+	//echo '<h2>Range of low complexity region:</h2>';
+	//echo '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" font-family: courier>'; 
+	//echo ' <tr>';
+	//echo '    <td valign="top">';
+	
+	
+	fwrite($resfp,  '<h2>Range of low complexity region:</h2>'."\n");
+	fwrite($resfp,  '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" font-family: courier>'."\n");
+	fwrite($resfp,  ' </tr>'."\n");
+	fwrite($resfp,  '    <td valign="top">'."\n");
+	
+	$desflag = false;
+	for($i=0; $i < sizeof($outarr1); $i++)
+	{
+		$j=1;
+		$ss = substr($outline1, $i, $j);
+		if(!strcmp($ss, "\n"))
+		{
+			$desflag = false;
+			$ss2 = substr($outline1, $i+1, $j);
+			if(!strcmp($ss2,"\n"))
+			{
+				//echo '<br />';
+				fwrite($resfp,  '<br />'."\n");
+			}
+			if(true == $incomment)
+			{
+				//echo '<br />';
+				fwrite($resfp,  '<br />'."\n");
+				$incomment=false;
+				$pos=0;
+			}
+		}
+		else
+		{
+			if($outarr1[$i] == '>')
+			{
+				$incomment = true;
+				$desflag = true;
+			}
+			if($outarr1[$i] == '>' && $i !=0)
+			{
+				//echo '<br />';
+				//echo '<br />';
+				fwrite($resfp,  '<br />'."\n");
+				fwrite($resfp,  '<br />'."\n");
+			}
+			if($desflag == true)
+			{
+				//echo '<i>'.$outarr1[$i].'</i>';
+				fwrite($resfp,  '<i>'.$outarr1[$i].'</i>');
+			}			
+			else
+			{
+				$pos = $pos+1;
+				if($outarr1[$i] == 'x')
+				{
+					//echo 'X';
+					if(false ==$inmask)
+					{
+					
+						//echo $pos;
+						//echo '-';
+						fwrite($resfp,  $pos);
+						fwrite($resfp,  '-');
+						$inmask=true;
+					}
+					if(true == $inmask)
+					{	
+						if('x' != $outarr1[$i+1])
+						{
+							$ss1 = substr($outline1, $i+1, $j);
+							if(strcmp($ss1, "\n"))
+							{
+								//echo $pos;
+								//echo ' ';
+								fwrite($resfp,  $pos);
+								fwrite($resfp,  ' ');
+								$inmask=false;
+							}
+						}
+					}
+				}
+				else
+				{
+					//echo $outarr1[$i];
+				}
+			}
+		}
+	}
+	
+	//echo '</td>';
+	//echo  '</tr>';
+	//echo '</table>';
+	fwrite($resfp,  '</td>'."\n");
+	fwrite($resfp,  '</tr>'."\n");
+	fwrite($resfp,  '</table>'."\n");
+	
+	//Here compare the characters between $outarr and $trimmed.
+	//End: Doing the range in different way
+	
+	if( false == ($sequence=file_get_contents($destFile)))
+		echo "Could not read file.";
+		
+	// Just format the sequence so that there is no extra '\n' in the $sequence
+	$pieces = explode("\n", $sequence);
+	$i=0;
+	while($i < sizeof($pieces))
+	{
+		$pieces[$i]= trim($pieces[$i]);
+		if(!strcmp($pieces[$i], ""))
+		{
+			//Do nothing
+		}
+		else
+		{
+			//concatenate the strings
+			$trimmedseq .="\n";
+			$trimmedseq .=$pieces[$i];
+		}
+		$i++;
+	}
+	
+	$trimmedseq = trim($trimmedseq);
+	//Now the job is to compare $outline and $trimmedseq and work accordingly
+	$outarr = str_split($outline1);
+	$trimmed = str_split($trimmedseq);
+	
+	//echo '<h2>Highlighted low complexity regions:</h2>';
+	//echo '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" background-color=#D1D1D1>'; 
+	//echo ' <tr>';
+	//echo '    <td valign="top">';
+	
+	fwrite($resfp,  '<h2>Highlighted low complexity regions:</h2>'."\n");
+	fwrite($resfp,  '<table class="ex" cellspacing="0" border="1" width=500 cellpadding="3" background-color=#D1D1D1>'."\n");
+	fwrite($resfp,  ' <tr>'."\n");
+	fwrite($resfp,  '    <td valign="top">'."\n");
+	
+	$desflag = false;
+	for($i=0; $i < sizeof($trimmed); $i++)
+	{
+		$j=1;
+		$ss = substr($trimmedseq, $i, $j);
+		if(!strcmp($ss, "\n"))
+		{
+			$desflag = false;
+			//echo '<br />';
+			fwrite($resfp,  '<br />'."\n");
+		}
+		else if($outarr[$i] == $trimmed[$i])
+		{
+			if($outarr[$i] == '>')
+				$desflag = true;
+			if($outarr[$i] == '>' && $i !=0)
+			{
+				//echo '<br />';
+				fwrite($resfp,  '<br />'."\n");
+			}
+			if($desflag == true)
+			{
+				//echo '<i>'.$trimmed[$i].'</i>';
+				fwrite($resfp,  '<i>'.$trimmed[$i].'</i>');
+			}
+			else
+			{
+				//echo $trimmed[$i];
+				fwrite($resfp,  $trimmed[$i]);
+			}
+		}
+		else
+		{
+			//echo "<u>".$trimmed[$i]."</u>";
+			fwrite($resfp,  "<u>".$trimmed[$i]."</u>");
+		}
+	}
+	
+	//echo '</td>';
+	//echo  '</tr>';
+	//echo '</table>';	//Here compare the characters between $outarr and $trimmed.
+	fwrite($resfp,  '</td>'."\n");
+	fwrite($resfp,  '</tr>'."\n");
+	fwrite($resfp,  '</table>'."\n");
+	fwrite($resfp, '</body>'."\n");
+	fwrite($resfp, '</html>'."\n");
+	fclose($resfp);
+
+// multiple recipients
+$to =$eaddr ; // note the comma
+
+// subject
+$subject = 'Link to the result of your query';
+
+// message
+  $message ='Link to the result of your query:
+'.$filelink;
+
+// To send HTML mail, the Content-type header must be set
+$headers = 'From: gba@bioinformatics.cise.ufl.edu' . "\r\n" .
+    'Reply-To: gba@bioinformatics.cise.ufl.edu' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+
+// Mail it
+mail($to, $subject, $message, $headers);
+?>
+
+</body>
+</html>
+
+
+
+
