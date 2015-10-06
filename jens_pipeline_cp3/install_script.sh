@@ -4,12 +4,8 @@
 
 cd programs/iupred
 cc iupred.c -o iupred
-cd ..
+cd ../..
 
 
-cd plaac/cli
-./build_plaac.sh
-cd ..
-
-
-
+programs/plaac/cli/./build_plaac.sh
+cp script_storage/master_plaac.sh programs/plaac/cli/target/
